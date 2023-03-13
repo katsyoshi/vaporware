@@ -49,8 +49,28 @@ module Vaporware
         output.puts "  push #{node.children.last}"
         return
       when :begin
-        gen(node.children.first, output)
-        :bigin
+        node.children.each { |child| gen(child, output) }
+      when :lvasgn
+        children = node.children
+        @var << children.first
+        # lvar
+        output.puts "  mov rax, rbp"
+        output.puts "  sub rax, #{@var.size * 8}"
+        output.puts "  push rax"
+        output.puts "  pop rax"
+        output.puts "  mov rax, [rax]"
+        output.puts "  push rax"
+
+        # rvar
+        output.puts "  mov rax, rbp"
+        output.puts "  sub rax, #{@var.size * 8}"
+        output.puts "  push rax"
+        gen(children.last, output)
+
+        output.puts "  pop rdi"
+        output.puts "  pop rax"
+        output.puts "  mov [rax], rdi"
+        output.puts "  push rdi"
       when :send
         children = node.children
         left = children[0]
