@@ -1,0 +1,9 @@
+use Vaporware::Compiler::Assembler::ELF::SectionHeader
+use Vaporware::Compiler::Assembler::ELF::Section::*
+
+class Vaporware::Compiler::Assembler::ELF::Section
+  @header: SectionHeader
+  @body: Text | Null | Data | BSS | Symtab | Shstrtab | Strtab | Note
+
+  def initialize: (type: (String | Symbol)) -> void
+end
